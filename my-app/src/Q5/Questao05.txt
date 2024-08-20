@@ -1,0 +1,51 @@
+Questão 5 - problema com o Props Drilling:
+        App.js
+        ├── componenteA
+        │    ├── componenteB
+        │    │    └── componenteC
+        │    │         └── componenteD
+
+Exemplo do problema:
+  Quando você precisa passar dados de um componente pai para um componente bem
+ "lá embaixo" na árvore de componentes,
+
+    Se ComponenteD precisar de um dado que está no App, teríamos que passar esse
+    dado de App para ComponenteA, depois para ComponenteB, depois para ComponenteC, 
+    até chegar em ComponenteD. Isso pode tornar o código difícil de ler e manter, 
+    especialmente se ComponenteB e ComponenteC não precisarem realmente do dado.
+
+    Com o Context do React, você pode criar um "contexto" que armazena esses dados
+    e permite que qualquer componente na árvore os acesse diretamente, sem precisar 
+    passar props em cada nível.
+
+//Exemplo da Resolução:
+
+    import React, { createContext, useContext } from 'react';
+    const UserContext = createContext(); // Cria o contexto
+
+    const App = () => {
+    const user = { name: "Robson", age: 21 };
+
+    return (
+        <UserContext.Provider value={user}> {/* Fornece o contexto */}
+        <ComponenteA />
+        </UserContext.Provider>
+    );
+    };
+
+    const ComponenteA = () => <ComponenteB />;
+    const ComponenteB = () => <ComponenteC />;
+    const ComponenteC = () => <ComponenteD />;
+
+    const ComponenteD = () => {
+    const user = useContext(UserContext); // Acessa o contexto diretamente
+    return <div>{user.name} - {user.age}</div>;
+    };
+
+
+  Resposta:
+    Aqui os dados são acessados diretamente onde são necessários, 
+    sem passar por todos os componentes intermediários. 
+    Isso torna o código mais limpo e fácil de manter.
+
+
